@@ -1,5 +1,5 @@
 # Sample-Code
-This repository contains sample code mostly for the Raspberry Pi and Raspbian, created by meigrafd and others. The idea for this repository was posted on the german [Raspberry Pi forum](http://www.forum-raspberrypi.de/Thread-andere-samplecoderepository).
+This repository contains sample code mostly for the Raspberry Pi and Raspbian, created by meigrafd and others. The idea for this repository was posted on the german ![Raspberry Pi forum](http://www.forum-raspberrypi.de/Thread-andere-samplecoderepository). To get started with the Markdown syntax used here, see ![this introduction](https://guides.github.com/features/mastering-markdown/).
 
 The code is written in Python, Shell and PHP, along with some additional programs written in other languages.
 
