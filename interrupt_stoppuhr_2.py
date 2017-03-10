@@ -19,12 +19,13 @@ def convert_timedelta(duration):
     hours = days * 24 + seconds // 3600
     minutes = (seconds % 3600) // 60
     seconds = (seconds % 60)
-    return hours, minutes, seconds
+    return hours, minutes, seconds, duration.microseconds
 
 
 def print_duration(start, end):
     duration = end - start
-    hours, mins, secs = convert_timedelta(duration)
+    hours, mins, secs, ms = convert_timedelta(duration)
+    ms = str(ms)[:4]
     h_suffix=''; m_suffix=''; s_suffix=''
     if hours == 0 or hours > 1:
         h_suffix = 'n'
@@ -32,7 +33,7 @@ def print_duration(start, end):
         m_suffix = 'n'
     if secs == 0 or secs > 1:
         s_suffix = 'n'
-    print('{:2} Stunde{:1}, {:2} Minute{:1}, {:2} Sekunde{:1}'.format(hours,h_suffix, mins,m_suffix, secs,s_suffix))
+    print('{:2} Stunde{:1}, {:2} Minute{:1}, {:2} Sekunde{:1}, {} ms'.format(hours,h_suffix, mins,m_suffix, secs,s_suffix, ms))
 
 
 def interrupt_Event(q, channel):
