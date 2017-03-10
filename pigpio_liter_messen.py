@@ -10,7 +10,7 @@ import sqlite3
 
 # ISR
 def interrupt_Event(queue, gpio, level, tick):
-    queue.put( time() )
+    queue.put( int(time()) )
 
 
 def main(gpioPin):
