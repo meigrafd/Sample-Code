@@ -19,7 +19,7 @@ def main():
         camera = PiCamera()
         camera.start_preview()
         sleep(2)
-        camera.capture(stream, format='png', resize=(50, 50))
+        camera.capture(stream, format='png', resize=(320, 240))
         stream.seek(0)
         camera.stop_preview()
         
@@ -32,7 +32,12 @@ def main():
     
     except (KeyboardInterrupt, SystemExit):
         print('Quit')
-        root.destroy()
+        try:
+            camera.close()
+            stream.close()
+            root.destroy()
+        except:
+            pass
     except Exception as error:
         print('Error: ' + str(error))
 
