@@ -4,7 +4,7 @@
 #
 from __future__ import print_function
 from time import sleep
-from datetime import datetime, strftime
+from datetime import datetime
 from RPi import GPIO
 from Queue import Queue
 from functools import partial
@@ -27,7 +27,7 @@ def main(PIR_PIN=24):
                 print('[{}] Motion detected'.format( dt.strftime('%d.%m.%Y %H:%M:%S') )
                 # hier kann man dann zB. mit dem picamera modul ein Bild schiessen ...
     
-    except KeyboardInterrupt: # does not work if it runs in background.
+    except KeyboardInterrupt:
         print("Quit")
 
 if __name__ == '__main__':
