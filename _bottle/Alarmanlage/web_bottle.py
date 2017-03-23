@@ -81,7 +81,7 @@ def interrupt_event(pin):
                 setting["motion"] = "Ja"
                 printD("{} -> Motion detected!".format(motion_time.strftime('%d.%m.%Y %H:%M:%S')))
         else:
-            if setting["motion"] == "Ja" and datetime.now() > (motion_time + timedelta(setting["no_motion_delay"])):
+            if setting["motion"] == "Ja" and datetime.now() > (motion_time + timedelta(seconds=setting["no_motion_delay"])):
                 setting["motion"] = "Nein"
 
 
