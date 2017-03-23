@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
+<head>
+<title>{{ setting["page_title"] or "Alarm" }}</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="robots" content="DISALLOW">
+<script src="static/jquery.min.js"></script>
+<script src="static/control.js" type="text/javascript"></script>
+<link href="static/stylesheet.css" rel="stylesheet">
+</head>
+<body>
+<div id="header"> </div>
+<div id="content">
+% from datetime import datetime
+% if setting["motion"] == "Ja":
+%    MOTION_TIME = setting["last_motion_time"].strftime('%d.%m.%Y %H:%M:%S')
+% else:
+%    MOTION_TIME = ""
+% end
+  <p>Armed: <span id="ARMED">{{ setting["armed"] }}</span></p>
+  <a href="/cmd?armed=Ja" title="Alarmanlage scharfschalten">Arm</a>&nbsp;
+  <a href="/cmd?armed=Nein" title="Alarmanlage ausschalten">Disarm</a><br/>
+  <p>
+    Motion detected: <span id="MOTION">{{ setting["motion"] }}</span><br/>
+    Last Motion Time: <span id="MOTION_TIME">{{ MOTION_TIME }}</span>
+  </p>
+  <br/>
+  <p><div id="Log" style="text-align:left; width:100%;">&nbsp;</div></p>
+</div>
+<div id="footer"> </div>
+</body>
+</html>

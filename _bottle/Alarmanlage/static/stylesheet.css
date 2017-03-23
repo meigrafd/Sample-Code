@@ -1,0 +1,38 @@
+body { 
+    font-size: 13pt;
+    color: black;
+    font-family: Verdana,arial,helvetica,serif;
+    margin: 0px;
+    background-color: #F5F5DC;
+}
+#header {
+    width: 100%;
+    min-height: 80px;
+}
+#menu {
+    font-size: 11pt;
+    color: #000;
+    float: left;
+    padding: 5px;
+    background-color: #F5F5DC;
+    margin: 0px 0px 0px 10px;
+    line-height: 20px;
+    min-width: 100px;
+}
+#content {
+    min-height: 840px;
+    margin-left: 140px;
+    width: 80%;
+}
+#tempchart {
+    margin-top: 0px;
+}
+#humchart {
+    margin-top: 20px;
+}
+#footer {
+    width: 100%;
+    min-height: 0px;
+    background-color: #F5F5DC;
+    text-align: center;
+}
