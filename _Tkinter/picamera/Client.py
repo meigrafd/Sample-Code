@@ -25,15 +25,16 @@ def printD(message):
 
 
 class streamClient(object):
-    def __init__(self, gui, host='127.0.0.1', port=8000):
+    def __init__(self, gui, host='127.0.0.1', port=8000, timeout=10):
         self.gui = gui
         self.host = host
         self.port = port
+        self.timeout = timeout
         self.running = False
     
     def start(self):
         self.client_socket = socket.socket()
-        self.client_socket.settimeout(10)
+        self.client_socket.settimeout(self.timeout)
         try:
             self.client_socket.connect((self.host, self.port))
         except (socket.timeout, ConnectionRefusedError) as Error:
@@ -46,7 +47,7 @@ class streamClient(object):
         self.running = True
         
         self.t = Thread(target=self.update, args=())
-        self.t.setDaemon(1)
+        self.t.daemon = True
         self.t.start()
         #self.gui.master.after(70, self.update_2)
         
@@ -63,13 +64,14 @@ class streamClient(object):
                 deserialized_data = pickle.loads(data)
                 printD('Frame received')
                 #print(deserialized_data)
+                #stdout.flush()
                 img = Image.fromarray(deserialized_data)
                 newImage = ImageTk.PhotoImage(img)
                 self.gui.stream_label.configure(image=newImage)
                 self.gui.stream_label.image = newImage
                 printD("image updated")
             else:
-                time.sleep(0.1)
+                time.sleep(0.01)
     
     def update_2(self):
         if self.running == False:
@@ -83,11 +85,11 @@ class streamClient(object):
             deserialized_data = pickle.loads(data)
             printD('Frame received')
             #print(deserialized_data)
-            stdout.flush()
+            #stdout.flush()
             img = Image.fromarray(deserialized_data)
             newImage = ImageTk.PhotoImage(img)
-            self.master.stream_label.configure(image=newImage)
-            self.master.stream_label.image = newImage
+            self.gui.stream_label.configure(image=newImage)
+            self.gui.stream_label.image = newImage
         self.gui.master.after(70, self.update_2)
     
     def quit(self):
