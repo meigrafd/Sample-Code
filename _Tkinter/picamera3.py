@@ -11,12 +11,10 @@
 from picamera.array import PiRGBArray
 from PIL import Image, ImageTk
 from threading import Thread
-from datetime import datetime
 from time import sleep, strftime
 from sys import exit, stdout
 import picamera
 import tkinter
-import numpy as np
 
 
 def printD(message):

@@ -16,7 +16,7 @@ class GUI:
         self.master.protocol("WM_DELETE_WINDOW", self.quit)
         self.main_menu()
         self.master.mainloop()
-
+    
     def main_menu(self):
         self.master.geometry("450x140+100+100")
         self.master.title("Hauptmenue")
@@ -27,7 +27,7 @@ class GUI:
         self.led_button.place(x=10, y=20, height=100, width=100)
         self.exit_button = tk.Button(master=self.master, bg="#229", fg="white", text="Exit", command=self.quit)
         self.exit_button.place(x=340, y=20, height=100, width=100)
-
+    
     def led_menu(self):
         self.led_master = tk.Toplevel()
         self.led_master.geometry("500x170+100+100")
@@ -42,7 +42,7 @@ class GUI:
         self.set_scale_button.place(x=10, y=70)
         self.stop_scale_button = tk.Button(self.led_master, text="Stoppen", command=self.stop_scale_proceed)
         self.stop_scale_button.place(x=85, y=70)
-
+    
     def led_toggle(self):
         if self.led_status == False:
             GPIO.output(self.gpiopin, True)
@@ -52,14 +52,14 @@ class GUI:
             GPIO.output(self.gpiopin, False)
             self.led_status = False
             self.led_tgl_button.config(bg="red", text="Bewaesserung\n kann\n gestartet\n werden")
-
+    
     def stop_scale_proceed(self):
         self.value = 201
-
+    
     def start_scale_proceed(self):
         self.value = 0
         self.led_automatisch(self.scale1.get())
-
+    
     def led_automatisch(self, scale_value):
         if (self.value < scale_value):
             GPIO.output(self.gpiopin, True)
@@ -69,11 +69,11 @@ class GUI:
         else:
             GPIO.output(self.gpiopin, False)
             self.printD("Done")
-
+    
     def printD(self, text):
         if self.DEBUG:
             print(text)
-
+    
     def quit(self):
         GPIO.cleanup()
         self.master.destroy()
