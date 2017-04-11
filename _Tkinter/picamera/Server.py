@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 #
+# Copyright (C) 2017 by meiraspi@gmail.com published under the MIT License
+#
 # Socket Server awaiting connection to stream raspicam
 #
 
@@ -54,12 +56,12 @@ class PiVideoStream(object):
     def update(self):
         # keep looping infinitely until the thread is stopped
         for frameBuf in self.stream:
-            # grab the frame from the stream and clear the stream in preparation for the next frame
-            self.frame = frameBuf.array
-            self.rawCapture.truncate(0)
             # if the thread indicator variable is set, stop the thread
             if self.running == False:
                 return
+            # grab the frame from the stream and clear the stream in preparation for the next frame
+            self.frame = frameBuf.array
+            self.rawCapture.truncate(0)
     
     def read(self):
         # return the frame most recently read
@@ -77,7 +79,7 @@ class PiVideoStream(object):
 
 
 
-class StreamServer(object):
+class streamServer(object):
     def __init__(self, videostream=None, host='0.0.0.0', port=8000):
         self.videostream = videostream
         self.host = host
@@ -97,10 +99,12 @@ class StreamServer(object):
         while self.running:
             frame = self.videostream.read()
             serialized_frame = pickle.dumps(frame)
+            # Write the length of the capture to the stream and flush to ensure it actually gets sent
             data_len = len(serialized_frame)
             printD("data_len: %d" % data_len)
             self.connection.write(struct.pack('<L', data_len))
             self.connection.flush()
+            # Send the image data over the wire
             self.connection.write(serialized_frame)
             self.connection.flush()
             printD("send.")
@@ -154,7 +158,7 @@ if __name__ == '__main__':
     
     try:
         vs = PiVideoStream(resolution=stream_resolution, framerate=stream_framerate, led=picamera_led)
-        stream = StreamServer(videostream=vs).run()
+        stream = streamServer(videostream=vs).run()
     except (KeyboardInterrupt, SystemExit):
         try: stream.quit()
         except: pass

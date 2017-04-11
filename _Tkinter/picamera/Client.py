@@ -1,4 +1,9 @@
 #!/usr/bin/python3
+#
+# Copyright (C) 2017 by meiraspi@gmail.com published under the MIT License
+#
+# Socket Client to stream raspicam in tkinter
+#
 
 import socket
 import struct
@@ -19,7 +24,7 @@ def printD(message):
         stdout.flush()
 
 
-class PiVideoStream(object):
+class streamClient(object):
     def __init__(self, gui, host='127.0.0.1', port=8000):
         self.gui = gui
         self.host = host
@@ -111,7 +116,7 @@ class GUI(object):
         self.main()
     
     def main(self):
-        self.videostream = PiVideoStream(gui=self, host=self.host, port=self.port)
+        self.videostream = streamClient(gui=self, host=self.host, port=self.port)
         self.master.geometry(self.gui_resolution)
         self.master.title("picamera network stream to tkinter")
         self.startstop_button = tk.Button(master=self.master, text="Start", bg="green", command=self.startstop_stream)
@@ -151,12 +156,10 @@ def main(DEBUG=True):
     stream_resolution = (320, 240)
     
     try:
-    
         tkinter_app = GUI(host='192.168.0.12', port=8000, resolution="{0}x{1}".format(screen_width, screen_height), stream_resolution=stream_resolution)
         tkinter_app.run()
-    
     except (KeyboardInterrupt, SystemExit):
-        print('Quit')
+        print('\nQuit\n')
         tkinter_app.quit()
     except Exception as error:
         print('Error: ' + str(error))
