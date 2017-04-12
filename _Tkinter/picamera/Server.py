@@ -4,10 +4,13 @@
 #
 # Socket Server awaiting connection to stream raspicam
 #
+# http://www.forum-raspberrypi.de/Thread-python-problem-tkinter-socket-client-for-raspicam-live-stream
+#
 
 import socket
 import struct
-import pickle
+import msgpack
+import msgpack_numpy
 import picamera
 from sys import stdout
 from time import sleep, strftime
@@ -56,12 +59,12 @@ class PiVideoStream(object):
     def update(self):
         # keep looping infinitely until the thread is stopped
         for frameBuf in self.stream:
-            # if the thread indicator variable is set, stop the thread
-            if self.running == False:
-                return
             # grab the frame from the stream and clear the stream in preparation for the next frame
             self.frame = frameBuf.array
             self.rawCapture.truncate(0)
+            # if the thread indicator variable is set, stop the thread
+            if self.running == False:
+                return
     
     def read(self):
         # return the frame most recently read
@@ -98,17 +101,17 @@ class streamServer(object):
         self.running = True
         while self.running:
             frame = self.videostream.read()
-            serialized_frame = pickle.dumps(frame)
+            serialized_data = msgpack.packb(frame, default=msgpack_numpy.encode)
             # Write the length of the capture to the stream and flush to ensure it actually gets sent
-            data_len = len(serialized_frame)
+            data_len = len(serialized_data)
             printD("data_len: %d" % data_len)
             self.connection.write(struct.pack('<L', data_len))
             self.connection.flush()
             # Send the image data over the wire
-            self.connection.write(serialized_frame)
+            self.connection.write(serialized_data)
             self.connection.flush()
             printD("send.")
-            sleep(0.01)
+            sleep(0.001)
     
     def stop(self):
         printD("streamserver: start")

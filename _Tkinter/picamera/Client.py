@@ -4,10 +4,13 @@
 #
 # Socket Client to stream raspicam in tkinter
 #
+# http://www.forum-raspberrypi.de/Thread-python-problem-tkinter-socket-client-for-raspicam-live-stream
+#
 
 import socket
 import struct
-import pickle
+import msgpack
+import msgpack_numpy
 import tkinter as tk
 from sys import exit, stdout
 from time import sleep, strftime
@@ -61,7 +64,7 @@ class streamClient(object):
                 printD('Updating...')
                 printD('data_len: %s' % data_len)
                 data = self.connection.read(data_len)
-                deserialized_data = pickle.loads(data)
+                deserialized_data = msgpack.unpackb(data, object_hook=msgpack_numpy.decode)
                 printD('Frame received')
                 #print(deserialized_data)
                 #stdout.flush()
@@ -71,7 +74,7 @@ class streamClient(object):
                 self.gui.stream_label.image = newImage
                 printD("image updated")
             else:
-                time.sleep(0.01)
+                time.sleep(0.001)
     
     def update_2(self):
         if self.running == False:
@@ -82,7 +85,7 @@ class streamClient(object):
             printD('Updating...')
             printD('data_len: %s' % data_len)
             data = self.connection.read(data_len)
-            deserialized_data = pickle.loads(data)
+            deserialized_data = msgpack.unpackb(data, object_hook=msgpack_numpy.decode)
             printD('Frame received')
             #print(deserialized_data)
             #stdout.flush()
