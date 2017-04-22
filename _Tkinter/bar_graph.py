@@ -8,7 +8,7 @@
 import tkinter as tk
 
 
-class BarGraph(object):
+class BarGraph:
     def __init__(self, canvas=None, x=0, y=0, width=20, height=None, color='red', outline='black', title=False, title_align=tk.SW, tags='', value=0):
         self.canvas = canvas
         # http://infohost.nmt.edu/tcc/help/pubs/tkinter/web/anchors.html
@@ -28,6 +28,11 @@ class BarGraph(object):
         if not self.height:
             self.height = self.canvas_height
         self.set_value(value)
+        
+        self.y_gap = 5  # Höhe zwischen der unteren linken ecke zum Balken
+        self.x_stretch = 2  # Platz zwischen den einzelnen Balken.
+        self.x_width = 15  # Breite der Balken
+        self.x_gap = 15  # Breite des Abstands des ersten Balken von der unten linken ecke
     
     def set_value(self, value):
         self.value = value
@@ -36,7 +41,8 @@ class BarGraph(object):
     
     def update(self, value):
         self.canvas.delete(self.bar)
-        self.canvas.delete(self.bar_title)
+        if self.bar_title:
+            self.canvas.delete(self.bar_title)
         self.set_value(value)
         self.draw()
     
@@ -60,6 +66,8 @@ class BarGraph(object):
         # Put the title above the bar
         if self.title:
             self.bar_title = self.canvas.create_text(x0 + 3, y0, anchor=self.title_align, font=self.font, text=str(self.title))
+        else:
+            self.bar_title = None
 
 
 
