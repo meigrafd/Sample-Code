@@ -103,14 +103,14 @@ b3.draw()
 b3.title='blub'
 b3.update(157)
 
-b4 = BarGraph(canvas=c, x=60, value=22, title=True)
+b4 = BarGraph(canvas=c, color='green', x=60, value=22, title=True)
 b4.draw()
 
 def update_scale_bar(event):
     value = scale1.get()
     b4.update(value)
 
-scale1 = tk.Scale(root, from_=0, to=200, length=200, orient=tk.HORIZONTAL)
+scale1 = tk.Scale(mainFrame, from_=0, to=200, length=200, orient=tk.HORIZONTAL)
 scale1.bind("<ButtonRelease-1>", update_scale_bar)
 scale1.place(x=150, y=20)
 
