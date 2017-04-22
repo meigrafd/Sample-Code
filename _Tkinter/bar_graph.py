@@ -82,10 +82,10 @@ root = tk.Tk()
 root.title("Bar Graph / Chart Bar")
 root.geometry("600x300")
 
-mainFrame = tk.Frame(root, relief=tk.SUNKEN, width=550, height=250)
+mainFrame = tk.Frame(root, relief=tk.SUNKEN, width=550, height=300)
 mainFrame.pack()
 
-c = tk.Canvas(master=mainFrame, width=500, height=200)
+c = tk.Canvas(master=mainFrame, width=500, height=250)
 c.pack()
 mainFrame.update()
 
