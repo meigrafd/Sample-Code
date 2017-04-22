@@ -76,13 +76,18 @@ class BarGraph(object):
 
 
 
+### Sample:
 
 root = tk.Tk()
 root.title("Bar Graph / Chart Bar")
+root.geometry("600x300")
 
-c = tk.Canvas(master=root, width=500, height=200)
+mainFrame = tk.Frame(root, relief=tk.SUNKEN, width=550, height=250)
+mainFrame.pack()
+
+c = tk.Canvas(master=mainFrame, width=500, height=200)
 c.pack()
-root.update()
+mainFrame.update()
 
 b1 = BarGraph(canvas=c, color='yellow', value=189)
 b1.draw()
@@ -98,9 +103,12 @@ b3.draw()
 b3.title='blub'
 b3.update(157)
 
+b4 = BarGraph(canvas=c, x=60, value=22, title=True)
+b4.draw()
+
 def update_scale_bar(event):
     value = scale1.get()
-    b3.update(value)
+    b4.update(value)
 
 scale1 = tk.Scale(root, from_=0, to=200, length=200, orient=tk.HORIZONTAL)
 scale1.bind("<ButtonRelease-1>", update_scale_bar)
