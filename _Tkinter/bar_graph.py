@@ -32,14 +32,32 @@ class BarGraph(object):
             self.height = self.canvas_height
         self.bar, self.bar_title = None, None
         self.value = value
-
+        
         self.set_value(value)
-
+    
     def set_value(self, value):
         self.value = value
         if self.title and not isinstance(self.title, str):
             self.title = value
-
+    
+    def value_color(self, value):
+        if value >= 90:
+            return "#FF0000"
+        elif value >= 70 and value <= 89:
+            return "#FF4000"
+        elif value >= 60 and value <= 69:
+            return "#FF8000"
+        elif value >= 50 and value <= 59:
+            return "#FFBF00"
+        elif value >= 30 and value <= 49:
+            return "#FFFF00"
+        elif value >= 20 and value <= 29:
+            return "#BFFF00"
+        elif value >= 10 and value <= 19:
+            return "#80FF00"
+        else:
+            return "#00FF00"
+    
     def update(self, value):
         if self.bar is not None:
             self.canvas.delete(self.bar)
@@ -47,7 +65,7 @@ class BarGraph(object):
             self.canvas.delete(self.bar_title)
         self.set_value(value)
         self.draw()
-
+    
     def draw(self):
         # Bottom left coordinate
         if self.x == 0:
@@ -56,12 +74,12 @@ class BarGraph(object):
             x0 = self.x + self.width
         # Top left coordinates
         y0 = self.height - self.value
-
+        
         # Bottom right coordinates
         x1 = x0 + self.width
         # Top right coordinates
         y1 = self.height
-
+        
         # http://infohost.nmt.edu/tcc/help/pubs/tkinter/web/create_rectangle.html
         # Draw the bar
         self.bar = self.canvas.create_rectangle(
