@@ -1,8 +1,8 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 #
 # http://www.forum-raspberrypi.de/Thread-python-tkinter-mainloop-unterbrechen?pid=245488#pid245488
 #
-import Tkinter as tkinter
+import tkinter
 import random
 
 class GUI(object):
