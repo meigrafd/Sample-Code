@@ -24,7 +24,7 @@ def main(PIR_PIN=24):
             sleep(0.01)
             if not queue.empty():
                 pin, state, dt = queue.get()
-                print('[{}] Motion detected'.format( dt.strftime('%d.%m.%Y %H:%M:%S') )
+                print('[{}] Motion detected'.format( dt.strftime('%d.%m.%Y %H:%M:%S') ))
                 # hier kann man dann zB. mit dem picamera modul ein Bild schiessen ...
     
     except KeyboardInterrupt:
