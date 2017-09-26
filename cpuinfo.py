@@ -5,7 +5,7 @@
 #
 from __future__ import print_function
 
-def getCPUinfo():
+def get_cpu_info():
     info = [{}]
     try:
         fo = open('/proc/cpuinfo')
@@ -19,12 +19,12 @@ def getCPUinfo():
             name, value = name_value
             info[-1][name] = value
         fo.close()
-    return info
+    return info[0]
 
 if __name__ == '__main__':
-    cpuInfo = getCPUinfo()[0]
-    for name in cpuInfo:
-        print("{0:16}: {1}" . format(name, cpuInfo[name]))
+    cpu_info = get_cpu_info()
+    for name in cpu_info:
+        print("{0:16}: {1}" . format(name, cpu_info[name]))
 
     #only print 'Serial' info:
-    print(cpuInfo['Serial'])
+    print(cpu_info['Serial'])

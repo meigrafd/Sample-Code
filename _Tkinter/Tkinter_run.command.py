@@ -25,7 +25,7 @@ class cmdExe:
         self.build_widgets()
         self.master.eval('tk::PlaceWindow %s center' % self.master.winfo_pathname(self.master.winfo_id()))
         self.master.mainloop()
-
+    
     def build_widgets(self):
         self.master.geometry("500x500+10+10")
         self.master.title("Command Executor")
@@ -56,7 +56,7 @@ class cmdExe:
         self.Log.configure(yscrollcommand=self.ScrollLog.set)
         self.message_queue = multiprocessing.Manager().Queue()
         self.master.after(100, self.CheckQueuePoll, self.message_queue)
-
+    
     def CheckQueuePoll(self, m_queue):
         try:
             str = m_queue.get(0)
@@ -65,13 +65,13 @@ class cmdExe:
             pass
         finally:
             self.master.after(100, self.CheckQueuePoll, m_queue)
-
+    
     # updates button states
     def update_all(self):
         button_list = {self.startstop_button}
         for b in button_list:
             b.update()
-
+    
     def startstop_func(self):
         if self.process is None:
             if self.running.get() == True:
@@ -80,7 +80,7 @@ class cmdExe:
                 return
 
             self.command = self.option_choice.get()
-            if self.entry.get() is not None:
+            if self.entry.get():
                 self.command = self.command + " " + self.entry.get()
             self.printD("\nExecuting command: %s\n" % self.command)
             self.running.set(True)
@@ -102,23 +102,7 @@ class cmdExe:
         self.running.set(False)
         self.process = None
         self.startstop_button["text"] = "Run"
-
-
-    def mp_execute(self, command):
-        self.entry.delete(0, tk.END)
-        self.Log.delete('1.0', tk.END)
-        self.process = Popen(shlex.split(command), stdout=PIPE, stderr=PIPE, bufsize=1)
-        for output in iter(self.process.stdout.readline, b''):
-            self.writeLog(output)
-            self.printD(output.strip())
-        if self.process is not None:
-            rc = self.process.poll()
-            self.process.stdout.close()
-            self.process.wait()
-        self.printD("\nDone")
-        return rc
-
-
+    
     def execute_command(self, command):
         rc = -1
         self.entry.delete(0, tk.END)
@@ -133,16 +117,16 @@ class cmdExe:
             self.process.wait()
         self.printD("\nDone")
         return rc
-
+    
     def printD(self, text):
         if self.DEBUG:
             print(text)
-
+    
     def writeLog(self, text):
         self.Log.insert(tk.END, (text))
         self.Log.see(tk.END)
         self.Log.update()
-
+    
     def quit(self):
         if self.process is not None:
             try: self.process.kill() # exit subprocess if GUI is closed (zombie!)
