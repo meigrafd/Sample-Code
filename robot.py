@@ -48,8 +48,8 @@ class Sonar_Ranger:
             self.time_elapsed = self.delta.seconds + self.delta.microseconds / 1E6
             if self.unit == 'cm':
                 metric = 0.000058
-            elif self.unit == 'inch':
-                metric = 0.000148
+            else:
+                metric = 0.000148  # inch
             self.distance = self.time_elapsed / metric
             self.telemetry['distance'] = self.distance
     
