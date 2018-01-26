@@ -13,7 +13,7 @@ import linecache
 #----- Variablen
 Datum = datetime.datetime.now().strftime("%Y-%m-%d")
 #Datei = "/tmp/"+str(Datum)+"_Messdaten.csv"
-Datei = "Messdaten.csv"
+Datei = "/tmp/Messdaten.csv"
 Bild1 = "/tmp/test/No.gif"
 Bild2 = "/tmp/test/Yes.gif"
 #-----
