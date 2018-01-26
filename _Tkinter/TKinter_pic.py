@@ -1,9 +1,9 @@
 try:
-	#python3
-	import tkinter
+    #python3
+    import tkinter
 except ImportError:
-	#python2
-	import Tkinter as tkinter
+    #python2
+    import Tkinter as tkinter
 import time
 import datetime
 import math
@@ -39,24 +39,23 @@ LabelBilder = tkinter.Label(master=tkFenster, image=pic1)
 LabelBilder.place(x=1, y=1)
 
 def readCSV(File, Line):
-	lines = linecache.getline(File, Line)
-	linecache.clearcache()
-	data = lines.strip().split(";")  
-	return data
+    lines = linecache.getline(File, Line)
+    linecache.clearcache()
+    data = lines.strip().split(";")  
+    return data
 
-def checkCSV():
-	global LabelBilder
-	Data = readCSV(Datei, 1)
-	print(Data[7])
-	if Data[7] == 0:
-		LabelBilder.config(image=pic1)
-	elif Data[7] == 1:
-		LabelBilder.config(image=pic2)
-	tkFenster.after(1000, checkCSV)
+def checkCSV(label):
+    Data = readCSV(Datei, 1)
+    print(Data[7])
+    if Data[7] == 0:
+        label.config(image=pic1)
+    elif Data[7] == 1:
+        label.config(image=pic2)
+    tkFenster.after(1000, checkCSV, label)
 
 # Aktivierung des Fensters
 try:
-	checkCSV()
-	tkFenster.mainloop()
+    checkCSV(LabelBilder)
+    tkFenster.mainloop()
 except (KeyboardInterrupt, SystemExit):
-	print("Schliesse Programm..")
+    print("Schliesse Programm..")
