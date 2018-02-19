@@ -34,6 +34,8 @@ class Sonar_Ranger:
         self.average = average
         self.range_min = range_min
         self.range_max = range_max
+        self.average_count = 3
+        self.last_announce_time = int(time.time())
         GPIO.setup(self.trig, GPIO.OUT)
         GPIO.setup(self.echo, GPIO.IN)
         self.start_time = datetime.now()
@@ -46,11 +48,11 @@ class Sonar_Ranger:
         else:
             self.end_time = datetime.now()
             self.delta = self.end_time - self.start_time
-            self.time_elapsed = self.delta.seconds + self.delta.microseconds / 1E6
+            self.time_elapsed = self.delta.seconds + self.delta.microseconds / 1E6  # ultra-hacker-style. 1E6 is 1000000.
             if self.unit == 'cm':
                 metric = 0.000058
             else:
-                metric = 0.000148  # inch
+                metric = 0.000148
             self.distance = self.time_elapsed / metric
             self.telemetry['distance'] = self.distance
     
@@ -76,19 +78,19 @@ class Sonar_Ranger:
     
     def print_distance(self):
         if self.distance:
-            if (int(time.time()) - self.status['announce_time']) >= self.settings['distance_announce_time']:
+            if (int(time.time()) - self.last_announce_time) >= self.settings['distance_announce_time']:
                 if self.distance > self.range_max or self.distance < self.range_min:
                     print('Distance: out of range %.2f' % self.distance)
                 else:
                     print('Distance: %.2f %s' % (self.distance, self.unit))
-                self.status['announce_time'] = int(time.time())
+                self.last_announce_time = int(time.time())
     
     def run(self):
         while True:
             time.sleep(self.settings['distance_measure_time'])
             if not self.status['stop_ping']:
                 if self.average:
-                    self.measure_average()
+                    self.measure_average(self.average_count)
                 else:
                     self.ping()
 
@@ -97,14 +99,13 @@ class Motor_Control:
     """
     http://www.14core.com/wiring-driving-the-l298n-h-bridge-on-2-to-4-dc-motors/
     """
-    def __init__(self, status, telemetry, motor_a_in1, motor_a_in2, motor_b_in3, motor_b_in4):
+    def __init__(self, status, motor_a_in1, motor_a_in2, motor_b_in3, motor_b_in4):
         self.motor_a_in1 = motor_a_in1
         self.motor_a_in2 = motor_a_in2
         self.motor_b_in3 = motor_b_in3
         self.motor_b_in4 = motor_b_in4
         self.status = status
-        self.telemetry = telemetry
-        self.telemetry['steerTo']=0
+        self.status['steerTo']=0
         GPIO.setup(self.motor_a_in1, GPIO.OUT)
         GPIO.setup(self.motor_a_in2, GPIO.OUT)
         GPIO.setup(self.motor_b_in3, GPIO.OUT)
@@ -115,40 +116,57 @@ class Motor_Control:
         GPIO.output(self.motor_a_in2, False)
         GPIO.output(self.motor_b_in3, False)
         GPIO.output(self.motor_b_in4, False)
-        self.telemetry['steerTo'] = 'stop'
-        print('Motor: {}'.format(self.telemetry['steerTo']))
+        self.status['steerTo'] = 'stop'
+        print('Motor: {}'.format(self.status['steerTo']))
     
     def forward(self):
         GPIO.output(self.motor_a_in1, True)
         GPIO.output(self.motor_a_in2, False)
         GPIO.output(self.motor_b_in3, True)
         GPIO.output(self.motor_b_in4, False)
-        self.telemetry['steerTo'] = 'forward'
-        print('Motor: {}'.format(self.telemetry['steerTo']))
+        self.status['steerTo'] = 'forward'
+        print('Motor: {}'.format(self.status['steerTo']))
     
     def reverse(self):
         GPIO.output(self.motor_a_in1, False)
         GPIO.output(self.motor_a_in2, True)
         GPIO.output(self.motor_b_in3, False)
         GPIO.output(self.motor_b_in4, True)
-        self.telemetry['steerTo'] = 'reverse'
-        print('Motor: {}'.format(self.telemetry['steerTo']))
+        self.status['steerTo'] = 'reverse'
+        print('Motor: {}'.format(self.status['steerTo']))
     
     def turn_left(self):
         GPIO.output(self.motor_a_in1, True)
         GPIO.output(self.motor_a_in2, False)
         GPIO.output(self.motor_b_in3, False)
-        GPIO.output(self.motor_b_in4, True)
-        self.telemetry['steerTo'] = 'left'
-        print('Motor: {}'.format(self.telemetry['steerTo']))
+        GPIO.output(self.motor_b_in4, False)
+        self.status['steerTo'] = 'left'
+        print('Motor: {}'.format(self.status['steerTo']))
     
     def turn_right(self):
+        GPIO.output(self.motor_a_in1, False)
+        GPIO.output(self.motor_a_in2, False)
+        GPIO.output(self.motor_b_in3, True)
+        GPIO.output(self.motor_b_in4, False)
+        self.status['steerTo'] = 'right'
+        print('Motor: {}'.format(self.status['steerTo']))
+    
+    def pivot_left(self):
+        GPIO.output(self.motor_a_in1, True)
+        GPIO.output(self.motor_a_in2, False)
+        GPIO.output(self.motor_b_in3, False)
+        GPIO.output(self.motor_b_in4, True)
+        self.status['steerTo'] = 'pivot_left'
+        print('Motor: {}'.format(self.status['steerTo']))
+    
+    def pivot_right(self):
         GPIO.output(self.motor_a_in1, False)
         GPIO.output(self.motor_a_in2, True)
         GPIO.output(self.motor_b_in3, True)
         GPIO.output(self.motor_b_in4, False)
-        self.telemetry['steerTo'] = 'right'
-        print('Motor: {}'.format(self.telemetry['steerTo']))
+        self.status['steerTo'] = 'pivot_right'
+        print('Motor: {}'.format(self.status['steerTo']))
+
 
 
 def main(gpio_mode=GPIO.BCM):
@@ -165,10 +183,9 @@ def main(gpio_mode=GPIO.BCM):
     settings['distance_measure_time'] = 0.6  # sec. you should wait 50ms before the next trigger.
     settings['distance_announce_time'] = 1   # sec
     status['stop_ping']=False
-    status['announce_time']=int(time.time())
     telemetry['distance']=None
     try:
-        motor = Motor_Control(status, telemetry, motor_a_in1, motor_a_in2, motor_b_in3, motor_b_in4)
+        motor = Motor_Control(status, motor_a_in1, motor_a_in2, motor_b_in3, motor_b_in4)
         radar = Sonar_Ranger(sonar_trigger, sonar_echo, telemetry, status, settings)
         # Spawn child process for running measurement
         radarProcess = mp.Process(target=radar.run)
@@ -180,10 +197,10 @@ def main(gpio_mode=GPIO.BCM):
             ## ..robots brain..
             
             if telemetry['distance'] and telemetry['distance'] < 15:
-                if not telemetry['steerTo'] == 'left':
+                if not status['steerTo'] == 'left':
                     motor.turn_left()
             else:
-                if not telemetry['steerTo'] == 'forward':
+                if not status['steerTo'] == 'forward':
                     motor.forward()
             
             time.sleep(0.01)  # lowers CPU usage
