@@ -37,6 +37,7 @@ class Sonar_Ranger:
         GPIO.setup(self.trig, GPIO.OUT)
         GPIO.setup(self.echo, GPIO.IN)
         self.start_time = datetime.now()
+        self.distance=None
         GPIO.add_event_detect(self.echo, GPIO.BOTH, self.callback)
     
     def callback(self, channel):
